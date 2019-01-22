@@ -1,0 +1,539 @@
+\documentclass[10pt,landscape,letterpaper]{article}
+\usepackage{multicol}
+\usepackage{wrapfig}
+\usepackage[colorlinks]{hyperref}
+\usepackage{microtype}
+\usepackage{calc}
+\usepackage{ifthen}
+\usepackage[margin=16pt]{geometry}
+\usepackage{amsmath, amssymb, amsfonts, amsthm}
+\usepackage{subcaption}
+\usepackage{enumitem}
+\usepackage{mathrsfs}
+\usepackage{textcomp}
+\usepackage{verbatim}
+\usepackage{graphicx}
+\renewcommand{\baselinestretch}{.85}
+\pagestyle{empty}
+\usepackage{listings}
+\usepackage[utf8]{inputenc}
+
+
+\def\version{0.1}
+
+\newcommand{\header}{
+		\bgroup
+		\centering
+		\scalebox{0.925}[1.0]{\LARGE\scshape Typesetting in \LaTeXe}
+		\par\vskip 6pt
+		\hrule \par\vskip 6pt
+		\parbox{.25\columnwidth}{\sc Version \,\version\hfill}\parbox{.5\columnwidth}{\hfil\centering\large\bfseries CHEAT SHEET\hfil}\parbox{.25\columnwidth}{\hfill\sc Jacob House} \par\vskip 6pt
+		\hrule\par\vskip 10pt
+		\egroup
+}
+
+\makeatletter
+
+\def\laTeX{%
+	L\kern-.36em{\sbox\z@ T\vbox to\ht\z@{\hbox{\check@mathfonts \fontsize\sf@size\z@\math@fontsfalse\selectfont A}}}\kern-.12em(\kern-.12em\TeX\kern-.12em)%
+}
+
+
+\lstdefinestyle{macrocode}{
+	name=macrocode,
+%	language=[LaTeX]TeX,
+	basicstyle=\fontsize{9}{9.2}\selectfont\ttfamily\SetTracking{encoding=*}{-75}\lsstyle,
+	columns=fullflexible,
+	numbers=left,
+	breakatwhitespace=true,
+	numberfirstline=1,
+	firstnumber=auto,
+	numberstyle=\scriptsize,
+	numbersep=5pt,
+	frame=single,
+	breaklines=true,
+	breakindent=12pt,
+	aboveskip=0.5 \baselineskip,
+	belowskip=0.5 \baselineskip,
+	firstnumber=last,
+	prebreak=\mbox{$\hookleftarrow$},
+}
+
+\lstnewenvironment{macrocode}[1][]{%
+	\lstset{
+		style=macrocode,
+		#1
+	}
+%	\csname\@lst @SetFirstNumber\endcsname
+}{%
+%	\csname \@lst @SaveFirstNumber\endcsname
+}
+
+
+% Redefine section commands to use less space
+\renewcommand{\section}{\@startsection{section}{1}{0mm}%
+	{.2ex}%
+	{.2ex}%x
+	{\sffamily\bfseries}}
+\renewcommand{\section}{\@startsection{section}{1}{0mm}%
+	{-1ex plus -.5ex minus -.2ex}%
+	{0.5ex plus .2ex}%x
+	{\normalfont\large\bfseries}}
+\renewcommand{\subsection}{\@startsection{subsection}{2}{0mm}%
+	{-1explus -.5ex minus -.2ex}%
+	{0.5ex plus .2ex}%
+	{\normalfont\normalsize\bfseries}}
+\renewcommand{\subsubsection}{\@startsection{subsubsection}{3}{0mm}%
+	{-1ex plus -.5ex minus -.2ex}%
+	{1ex plus .2ex}%
+	{\normalfont\small\bfseries}}
+% Don't print section numbers
+\setcounter{secnumdepth}{0}
+
+\parindent=0.75\parindent
+\columnsep=36pt
+\columnseprule=0.4pt
+
+
+\newcommand{\bs}{\symbol{92}} % backslash
+
+
+\newwrite\example@out
+\newcounter{exacnt}
+\setcounter{exacnt}{1}
+\newlength{\savefboxrule}
+\newlength{\savefboxsep}
+\newlength{\outdent}
+\setlength{\outdent}{0cm}
+%\addtolength{\headwidth}{\outdent}
+\newenvironment{example}%
+{\begingroup% Lets Keep the Changes Local
+	\@bsphack
+	\immediate\openout \example@out \jobname.exa
+	\let\do\@makeother\dospecials\catcode`\^^M\active
+	\def\verbatim@processline{%
+		\immediate\write\example@out{\the\verbatim@line}}%
+	\verbatim@start}%
+{\immediate\closeout\example@out\@esphack\endgroup%
+	%
+	% And here comes my part. :-
+	%   
+	\stepcounter{exacnt}%
+	\setlength{\parindent}{0pt}%
+	\par%\addvspace{3.0ex plus 0.8ex minus 0.5ex}\vskip -\parskip
+	%  Page \lsspageref{exa:\theexacnt}
+	\expandafter\ifx\csname r@exa\theexacnt\endcsname\relax\else
+	%\ifx\pdfoutput\undefined % We're not running pdftex
+	%  \ifodd\lsspageref{exa\theexacnt}\hspace*{0pt}\else\hspace*{-\outdent}\fi%
+	%\else
+	%% HyPsd@pageref internal hyperref command v6.69c
+	\ifodd\HyPsd@pageref{exa\theexacnt}\hspace*{0pt}\else\hspace*{-\outdent}\fi%
+	%\fi
+	\fi
+	\makebox[\linewidth][l]{%
+		%\raisebox{-\height}[0pt][\totalheight]{%
+		\begin{minipage}[c]{0.445\linewidth}%
+			\small\lstinputlisting[style=macrocode]{\jobname.exa}
+		\end{minipage}%
+		%}%
+		\hfill\hfill%
+		\setlength{\savefboxrule}{\fboxrule}%
+		\setlength{\fboxrule}{0.1pt}%
+		\setlength{\savefboxsep}{\fboxsep}%
+%		\setlength{\fboxsep}{3mm}%
+		%  \raisebox{-\height}[0pt][\totalheight]{%
+		\setlength{\fboxsep}{4pt}%
+		\fbox{%
+			\begin{minipage}{0.48\linewidth}%
+%				\setlength{\fboxrule}{\savefboxrule}%
+%				\setlength{\fboxsep}{0pt}%
+%				\setlength{\fboxrule}{0.5pt}%
+				\setlength{\parskip}{1ex plus 0.4ex minus 0.2ex}%
+				\begin{trivlist}\item\small\input{\jobname.exa}
+				\end{trivlist}
+			\end{minipage}
+		}%
+		%  }%
+	}\label{exa\theexacnt}%
+\newline
+%	\addvspace{3ex plus 0.8ex minus 0.5ex}\vskip -\parskip
+}
+
+\def\R{\ifmmode\mathbb{R}\else$\mathbb{R}$\fi}
+
+\makeatother
+
+\begin{document}
+\small
+\begin{multicols*}{3}
+\header
+\section{Paragraphs and Alignment}
+To tell \laTeX\ that you would like to create a new paragraph, press the return key twice. That is, leave a blank line between the paragraphs in your \verb|.tex| or \verb|.ltx| file. 
+
+Similarly, one may use the \TeX\ primitive \verb|\par| at the end of a paragraph. This prevents the need of a blank line in the source code. For example,
+\begin{macrocode}
+The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog.
+
+The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. \par
+The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. 
+\end{macrocode}
+Two consecutive empty lines generate two \verb|\par| tokens. For all practical purposes this is equivalent to one \verb|\par|, because after the first one \TeX\ enters vertical mode, and in vertical mode a \verb|\par| only exercises the page builder, and clears the paragraph shape parameters.
+
+By default, \LaTeX\ uses full justification; both the left and right edges of the text are smooth. One can disable full justification in favour of left-aligned text by using the \verb|\raggedright| command. Similarly, default vertical alignment settings attempt to avoid large white spaces at the bottom of pages by stretching page contents. This may be disabled with the \verb|\raggedbottom| command.
+
+Additionally, \LaTeX\ provides \verb|center|, \verb|flushleft|, and \verb|flushright| environments which do exactly what one may expect.
+
+\subsection{Line Breaks}
+To manually break a line, one may the \verb|\newline| command. Note that \verb|\\| is an alias of \verb|\newline|; the two have identical meaning. As we can see, when a line \newline is manually broken, the following line is not indented. Also notice that the broken line was not stretched to alignment with the paragraph. We can also use \verb|\hfill\break| to create a non-stretching linebreak. This is contrasted by the \verb|\linebreak| command, which \textit{will} stretch or shrink whitespace between text when \linebreak breaking lines to compensate for the text that has been forced out to the next line. Text, combined with an adjustable white space, is called glue and \TeX\ may find the required stretch intolerable and deny the requested line break. To suppress \TeX's fussiness over line breaking badness, use \verb|\sloppy|. Issuing a \verb|\fussy| returns \TeX\ to its ordinary compulsive self.
+
+Do \textit{not}, under any circumstances, use \verb|\newline|, \verb|\\|, \verb|\hfill\break|, or \verb|\linebreak| to insert line breaks between paragraphs. Always insert a blank line or use \verb|\par|.
+
+Control sequences \verb|\newpage| and \verb|\pagebreak| behave similar so their horizontal equivalents; \verb|\newpage| will immediately switch to the next page whereas \verb|\pagebreak| will stretch page contents then break.
+
+\section{Boxes and Glue}
+A box is the \TeX\ term for an invisible container that can hold a visible element, nothing, or other boxes. Glue is the \TeX\ term for an invisible connector that determines the separation between boxes. Each separate visible element contained within a \TeX\ document is contained within a box. A visible element can be a letter, image, geometric shape, etc. \TeX\ builds pages by gluing boxes together according to the default \TeX\ rules, default \LaTeX\ rules, or document commands. In a typical document, letter boxes are glued to other letter boxes to form words, which are then elastically glued to other words to form sentences. Sentences are broken into lines and placed in paragraph boxes. Elastic glue is squeezed or stretched to fully justify lines within paragraph boxes. Paragraph boxes are glued to diagram boxes, and so on.
+
+\subsection{Producing Boxes}
+The \verb|\makebox| control sequence may be used to create a box whose contents will not be broken, so it is often used to prevent hyphenation or to group text that should not be broken across several lines. It takes two optional parameters, width and position:
+\begin{macrocode}
+\makebox[width][pos]{text}
+\end{macrocode}
+These parameters allow \verb|\makebox| to be used in many ways, for example,
+\begin{example}
+\makebox[9ex][s]{Bad text}%
+\hskip-9ex%
+\makebox[9ex][s]{X X X X}
+
+Text \makebox[1.5\width][r]%
+{running away}
+\end{example}
+
+The control sequence \verb|\mbox{text}| is the shorthand no-option version of \verb|\makebox|.
+
+\subsubsection{Framed Boxes}
+The command \verb|\framebox| behaves identically to \verb|\makebox| except that it additionally draws a box around its contents. So we have
+\begin{macrocode}
+\framebox[width][pos]{text}
+\fbox{text}
+\end{macrocode}
+
+
+
+
+\subsection{Inserting Vertical and Horizontal Glue}
+The general form to express a glue is: {\ttfamily <fixed part> plus <stretchable part> minus <shrinkable part>}. Each of these parts can be expressed in any of \LaTeX\ units (mm, cm, pt, pc, em, etc.). For example {\ttfamily 2cm plus 2mm minus 1mm}.
+
+When composing a box which contains glues, TeX uses first their ``natural dimensions'' which is the fixed part (2cm in the above example). If the resulting box is underfull, then \TeX\ expands all glue which has a non-zero stretchable part, up to the amount specified in that glue. In our example, the glue can stretch 2mm at maximum. If the box contains several glues with different stretchability, each one is stretched proportionally to the given stretchability. If the box is still underfull after stretching all glue to its maximum, a warning about ``Underfull box'' is issued.
+
+Analogously, if the box is overfull, \TeX\ tries to reduce the space by shrinking that glue. So, in our example, the final inserted glue can vary between 1.9cm and 2.2cm, depending on the size of the box which contains that glue.
+
+The \verb|plus| part in the glue can specify the value ``infinite'', through one of the following keywords: \verb|fil|, \verb|fill| or \verb|filll|. Each of these infinites is infinitely greater than the preceding one.
+
+Now that we have a basic understanding of glue, we can describe its insertion in a document. We use the control sequence
+\begin{macrocode}
+\hspace{<length>}
+\end{macrocode}
+so insert a horizontal rubber length of \verb|<length>|. We can utilize infinite stretch with the control sequences \verb|\hfil| and \verb|\hfill|, defined as
+\begin{macrocode}
+\hfil = \hskip 0pt plus 1fil minus 0pt
+\hfill = \hskip 0pt plus 1fill minus 0pt
+\end{macrocode}
+and, though it is not predefined as a macro, we can also use
+\begin{macrocode}
+\hskip 0pt plus 1filll
+\end{macrocode}
+to get that third level of infinity. If glue is to be inserted at the beginning of a line, the starred variant of \verb|\hspace{}|, \verb|\hspace*{}|, is to be used. 
+
+Similarly, we use \verb|\vspace{}| when inserting a vertical rubber length. Like its horizontal cousin, \verb|\vspace{}| accepts standard glue lengths as an argument. For example,
+\begin{macrocode}
+\vspace{2in plus 1in minus 0.5in}
+\end{macrocode}
+produces a vertical space ranging between 1.5 and 3 inches, depending on surrounding text. As before, there is also a \verb|\vspace*{}| command. This is because the command \verb|\vspace{}| has no effect at the top of a page or at the bottom. Why would you want space when you are about to move to a new page? If you insist, you must use \verb|\vspace*{}| to force \LaTeX\ to make space.
+
+
+
+\subsection{Indentation}
+The horizontal distance by which the first line of paragraphs is indented is stored in \verb|\parindent| which can be set to a constant or to a multiple of another length.
+\begin{macrocode}
+\parindent=0pt
+\parindent=1.5\parindent
+\end{macrocode}
+
+To produce a zero \verb|\parindent|, one may also load the {\sffamily parskip} package.
+
+\section{Typography}
+\LaTeX, being a markup language, uses special syntax to denote text styles such as {\itshape italicised}, {\bfseries bold-face}, and \textsf{sans-serif}. In particular, we have the commands shown below.
+\begin{center}
+	\renewcommand{\arraystretch}{1.5}
+	\begin{tabular}{|lll|} \hline
+		\textit{italic} & \verb|\textit{...}| & \verb|{\itshape ...}|  \\
+		 \textbf{bold-face} & \verb|\textbf{...}| & \verb|{\bfseries ...}| \\
+		\textsl{slanted} & \verb|\textsl{...}| & \verb|{\slshape ...}| \\
+		 \textsc{Small Caps} & \verb|\textsc{...}| & \verb|{\scshape ...}| \\
+		\textrm{roman} & \verb|\textrm{...}| & \verb|{\rmfamily ...}| \\
+		\textsf{sans-serif} & \verb|\textsf{...}| & \verb|{\sffamily ...}| \\
+		\texttt{monospaced} & \verb|\texttt{...}| & \verb|{\ttfamily ...}| \\
+		\emph{emphasised} & \verb|\emph{...}| & \verb|{\em ... }| \\
+		\hline 
+	\end{tabular}
+\end{center}
+Notice that there are two ways to encode each font style: as a command with an argument (e.g., \verb|\textit{...}|) and as a group (\verb|{}|) containing a switch (e.g., \verb|\itshape|). For short texts, the command variant is often more useful whereas for longer texts the switch variant is more aptly suited (see Defining Macros).
+
+\LaTeX\ uses braces (\verb|{}|) to denote what are referred to as \textit{groups}. Looking at the command variant of the font control sequences above, one may mistake the \verb|...| to be the argument passed to the command. In fact, the argument is what immediately follows the command; that is, the entire group \verb|{...}|. What this means in terms of how commands behave, however, is that a command such as \verb|\textbf| affects only the one argument that follows it. So, 
+\begin{macrocode}
+\textit italics
+\end{macrocode}
+would in fact only print ``\textit italics,'' not \textit{italics}. Conversely, a switch will affect \textit{all} text that follows it, up to the end of the group. For this reason, we may also use \verb|\bgroup| and \verb|\egroup| rather than opening and closing braces,
+\begin{example}
+\textit\bgroup some italics text\egroup
+\end{example}
+though this is shown here as an example and rarely used in practice. 
+
+It is recommended to use \verb|\emph| to emphasise text, not \verb|\textit|. \verb|\emph| will italicise normal font text and, when invoked from an already-italicised context, convert text to a normal font for emphasis.
+
+
+Older \LaTeX2.09 documents may contain switches such as \verb|\it|, \verb|\bf|, \verb|\sl|, \verb|\sc|, \verb|\rm|, \verb|\sf| and \verb|\tt| to denote the above font shapes. These commands are obsolete in \LaTeXe\ and should not be used.
+
+
+\subsection{Legacy Support}
+The obsolescent \TeX\ commands \verb|\rm|, \verb|\it|, \verb|\bf|, etc. are declared in class files to function as their modern equivalents.
+\begin{macrocode}
+\DeclareOldFontCommand{\rm}{\normalfont\rmfamily}{\mathrm}
+\DeclareOldFontCommand{\bf}{\normalfont\bfseries}{\mathbf}
+\DeclareOldFontCommand{\it}{\normalfont\itshape}{\mathit}
+\end{macrocode}
+So, writing
+\begin{macrocode}
+{\bf\it some text}
+\end{macrocode}
+is equivalent to writing
+\begin{macrocode}
+{\normalfont\bfseries\normalfont\itshape some text}
+\end{macrocode}
+As a result, the above code produces {\normalfont\bfseries\normalfont\itshape some text}, not {\bfseries\itshape some text}, as intended. This is because \verb|\normalfont| negated the affect \verb|\bfseries| had.
+
+The moral here is to \textit{never} use the old font commands. You gain nothing and lose much of the flexibility of the new ones. (Well, after 
+\newcount\yearsSinceTex
+\yearsSinceTex=\numexpr\the\year-1994\relax
+\the\yearsSinceTex\ 
+years they aren't \textit{really} new.) 
+
+We also have the following sizing commands, each of which have a corresponding environment.
+
+\begin{center}
+	\renewcommand{\arraystretch}{1.5}
+	\begin{tabular}{|ll|} \hline
+		{\tiny tiny} & \verb|{\tiny ...}| \\
+		{\scriptsize scriptsize} & \verb|{\scriptsize ...}| \\
+		{\footnotesize footnotesize} & \verb|{\footnotesize ...}| \\
+		{\small small} & \verb|{\small ...}| \\
+		{\normalsize normalsize} & \verb|{\normalsize ...}| \\
+		{\large large} & \verb|{\large ...}| \\
+		{\Large Large} & \verb|{\Large ...}| \\
+		{\LARGE LARGE} & \verb|{\LARGE ...}| \\
+		{\huge huge} & \verb|{\huge ...}| \\
+		{\Huge Huge} & \verb|{\Huge ...}| \\
+		\hline 
+	\end{tabular}
+\end{center}
+
+
+\subsection{Special Characters}
+\LaTeX\ defines several special symbols and characters using combinations of other keyboard characters, either because the actual symbol is reserved for \LaTeX\ syntax or keyboards do not have the symbol in question.
+
+Opening quotation marks are produced using the backtick (\textasciigrave) key while closing quotation marks are produced using the vertical quote (\textquotesingle) key. The double quote character is never used. Rather, to produce double quotation marks, use two backticks or vertical quotes in succession. A \verb|\thinspace| (aliased to \verb|\,|) can be used to separate double and single quotation marks that come one after another.
+\begin{macrocode}
+``\,`I'm positive,' he said, `I can do it.'\,''
+\end{macrocode}
+
+To produce dashes of varying sizes, different numbers of hyphens must be used in the \TeX\ source. One hyphen (\verb|-|) is used to typeset a hyphen, used in compound words like `over-the-counter.' Two hyphens (\verb|--|) are used to create an en-dash that may be used to denote a range of numbers (1994--\the\year, for example), and three hyphens (\verb|---|) are used to typeset em-dashes --- used in paragraphs for interjections.
+
+The tilde (\verb|~|) character is used in \TeX\ to denote what is referred to as a non-breaking space --- known as a {\itshape tie}. That is, a space that cannot be used as a place to break a line.
+\begin{macrocode}
+\catcode`\~=\active
+\def~{\penalty10000\ }
+\end{macrocode}
+This should be used whenever a label and a number follow one another, as well as other situations such as phone numbers.
+\begin{macrocode}
+See Section~3.1 or call (234)~555-6789 for more details.
+\end{macrocode}
+
+Ellipsis points may be produced using the \verb|\ldots| macro and letter accents may be produced as in the following example.
+\begin{example}
+H\^otel, na\"ive, \'el\=eve,\\
+sm\o rrebr\o d, !`Se\~norita!,\\
+Sch\"onbrunner Schlo\ss{}
+Stra\ss e
+\end{example}
+
+The below table shows a more comprehensive list of accents and non-English characters with their control symbols.
+\vspace{0pt minus 20pt}
+\begin{center}
+\renewcommand{\arraystretch}{1.25}
+\begin{tabular}{|*{3}{lp{0.95cm}}ll|} \hline
+	\`o & \verb|\`o| & \'o & \verb|\'o| & \^o & \verb|\^o| & \~o & \verb|\~o|  \\
+	\=o & \verb|\=o| & \.o & \verb|\.o| & \"o & \verb|\"o| & \c c & \verb|\c c|  \\
+	\d o & \verb|\d o| & \b o & \verb|\b o| & \t oo & \verb|\t oo| & \ss & \verb|\ss| \\[0.5ex]
+	\oe & \verb|\oe| & \OE & \verb|\OE| & \ae & \verb|\ae| & \AE & \verb|\AE|  \\
+	\aa & \verb|\aa| & \AA & \verb|\AA| & \i & \verb|\i| & \j & \verb|\j|  \\
+	\o & \verb|\o| & \O & \verb|\O| & \l & \verb|\l| & \L & \verb|\L|  \\
+	\hline 
+\end{tabular}
+\end{center}
+
+We also note that the ten special characters
+\begin{center}
+	\# \hspace{0.5em} \$ \hspace{0.5em} \% \hspace{0.5em} \& \hspace{0.5em} \~\ \hspace{0.5em} \_ \hspace{0.5em} \^\ \hspace{0.5em} \textbackslash \hspace{0.5em} \{ \hspace{0.5em} \}
+\end{center}
+are produced by preceding the symbol with a backslash (with the exception of `\textbackslash', which is typeset using \verb|\textbackslash|.)
+
+
+
+\subsection{Ligatures}
+\TeX\ also produces ligatures for certain characters (shown below).
+\begin{center}
+\large ff \quad fi \quad fl \quad ffi
+\end{center}
+This may be suppressed by inserting an empty group \verb|{}| between the characters:
+\begin{macrocode}
+f{}f \quad f{}i \quad f{}l \quad f{}f{}i
+\end{macrocode}
+produces
+\begin{center}
+\large f{}f \quad f{}i \quad f{}l \quad f{}f{}i.
+\end{center}
+
+\section{Modes in \TeX}
+
+\section{Math Mode}
+\subsection{Inline v. Display Math Mode}
+
+\subsection{Equation Environments}
+
+\subsection{Math Symbols}
+
+\subsection{Theorems}
+
+
+\section{Floating Bodies}
+
+
+\section{Graphics}
+\subsection{Graphic Formats}
+\subsubsection{Encapsulated PostScript}
+
+\subsubsection{Portable Document Format, JPEG, and PNG}
+
+
+\section{Cross-Referencing}
+
+\subsection{Indexing}
+
+
+\section{Sectioning}
+\TeX\ uses a counter for each of its headings. Due to the hierarchical nature of document headings, the counter for a given heading is required to be reset to $1$ each time the next higher-level number is incremented. The nesting of headers is as follows:
+\begin{macrocode}
+\newcounter{part}
+\newcounter{chapter}			%% Book and report classes only
+\newcounter{section}[chapter]
+\newcounter{subsection}[section]
+\newcounter{subsubsection}[subsection]
+\newcounter{paragraph}[subsubsection]
+\newcounter{subparagraph}[paragraph]
+\end{macrocode}
+What this means is that each time the \texttt{chapter} counter is incremented, the \texttt{section} counter resets, each time the \texttt{section} counter is incremented, the \texttt{subsection} counter is reset, and so on. 
+
+\section{Defining Macros} % TeX internals, @, \let v. \def, etc
+% checking newcommand vs renewcommand VS just def
+The words `control sequence,' `macro,' and `command' all reference the same thing in \LaTeX. That is, a shorthand way of repeating much longer and more cumbersome code very easily. For example, \verb|\TeX| is defined in \verb|latex.ltx| (from \verb|ltlogos.dtx|) as
+\begin{macrocode}
+\def\TeX{T\kern-.1667em\lower.5ex\hbox{E}\kern-.125emX\@}
+\end{macrocode}
+Users of \TeX\ can also define macros. Suppose we wish to use \R\ to denote the real numbers. Ordinarily this would need to be typeset as \verb|\mathbb{R}| in math mode or even more complicatedly as \verb|$\mathbb{R}$| in text mode. Instead, define \verb|\R| as follows.
+\begin{macrocode}
+\def\R{\ifmmode\mathbb{R}\else$\mathbb{R}$\fi}
+\end{macrocode}
+Then we can write simply \verb|\R|, either in math mode or horizontal mode, to get \R.
+
+\makeatletter
+\the\year/\two@digits{\the\month}/\two@digits{\the\day}:%
+\two@digits{\the\count@}:\two@digits{\the\count2}
+\makeatother
+
+\subsection{Delimited Arguments}
+User-defined control sequences can be even more flexible than the example above through the use of delimited arguments. 
+
+
+
+\subsection{The {\ttfamily \bs makeatletter} and {\ttfamily \bs makeatother} Macros}
+The \verb|\makeatletter| macro changes the category code of `@' character to 11  (which is the catcode of ordinary characters a-z, A-Z). \verb"\makeatother" reverts this to its original catcode of 12. 
+
+Knuth assigns a category code for each and every character like 0 for escape `\textbackslash', 1 for begining of a group `\{', 2 for end of group 	`\}', 3 for math shift `\$', 4 for alignmet tab `\&', 5 for end of line, 6 for paramter `\#', 7 for superscript `\^', 8 for subscript `\_', 9 for ignored character, 10 for space, 11 for letters, 13 for active character `\~', 14 for comment character `\%', 15 for invalid character and 12 for characters other than the above.
+
+Knuth gives the freedom to change the catcode of any character anywhere. One could change the catcode of \textbackslash{} to 11 (i.e., a letter) and assign the catcode 0 to $|$ so that \verb+|section+ becomes a function or control sequence.
+
+You may have noted that an escape character combined with the characters of catcode 11 becomes a control sequence. As such, all the user defined control sequences or macros will be of this nature. This raises the issue of a user-defined macro having the same name as that of a macro in a package or even the \TeX{} kernel. This can break packages and cause unpredictable behaviour.
+
+In order to circumvent this foreseeable problem, package writers always use the character `@' in their control sequences by using \verb|\makeatletter| to change the catcode of `@' character to 11 which is the catcode of alpha characters. At the end of the package, the author will revert the catcode of `@' to 12 with the command \verb|\makeatother|. As a result, these macros cannot be redefined within the document without changing the catcode of `@' to 11 and novice users cannot accidentally create macros that might clash with kernel macros. 
+
+For completeness we also remark that \verb|\makeatletter| and \verb|\makeatother| are defined as below and hence the following definitions may be used instead of the control sequences.
+\begin{macrocode}
+\def\makeatletter{\catcode`\@11\relax}
+\def\makeatother{\catcode`\@12\relax}
+\end{macrocode}
+For example, suppose we wish to make a counter that the user can increment and get the value of, but not redefine or decrement. We might use
+\begin{macrocode}
+\makeatletter
+\newcount\@counta
+\@counta=0
+\def\addtocounta{\advance\@counta by 1\relax}
+\def\countaval{\the\@counta}
+\makeatother
+\end{macrocode}
+
+\subsection{Registers and Tokens}
+
+
+\section{Flow Control}
+Like any programming language, \TeX\ provides all the standard mechanisms for flow control.
+\subsection{If \ldots\ Then \ldots\ Else \ldots}
+Of these flow-control mechanisms, the most commonly used is likely the {\em if-then} and {\em if-then-else} construct. \TeX nicians creating documents designed for modularity and flexibility in reuse will find \TeX's {\em if} construct of particular interest.
+
+\subsection{The {\sffamily ifthen} package}
+
+
+\subsection{The {\sffamily optional} package}
+
+\section{Troubleshooting}
+\subsection{Overfull and Underfull  {\ttfamily hbox}es and {\ttfamily vbox}es}
+
+\subsection{File ended errors}
+
+\subsection{Unresolved References}
+
+\subsection{Undefined Control Sequence}
+There are two likely scenarios where one may encounter an `undefined control sequence' error. The first is that not all of the correct macro packages have been loaded. For example, the \verb|\mathscr{}| control sequence will throw this error if the {\sffamily mathrsfs} has not been loaded. 
+
+The second and more complex reason that one may encounter this error is that a macro or definition was created within a group and \TeX\ is now outside that group. For example, 
+\begin{macrocode}
+{\def\a{b}}\a
+\end{macrocode}
+will produce such an error because \verb|\a| is only defined within the group. 
+
+For completeness, we also note that 
+\begin{macrocode}
+\count0=1 {\count0=2 } \showthe\count0
+\end{macrocode}
+will display the value 1; the assignment made inside the group is undone at the end of the group. Moreover, The choice of the brace characters for the beginning and end of group characters is not hard-wired in \TeX. It is arranged like this in the plain format:
+\begin{macrocode}
+\catcode`\{=1 % left brace is begin-group character
+\catcode`\}=2 % right brace is end-group character
+\let\bgroup={ \let\egroup=}
+\end{macrocode}
+
+\subsection{Paragraph Ended Before \ldots Was Complete}
+
+\vfill\copyright\ \uppercase\expandafter{\romannumeral \the\year} Jacob House
+
+\end{multicols*}
+\end{document}
